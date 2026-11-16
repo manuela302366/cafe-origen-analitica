@@ -7,3 +7,6 @@ console.log("producto del registro en la posicion 4:", ventas[4].producto);
 
 console.log("Tabla completa:");
 console.table(ventas);
+
+
+console.log(ventas.map(v => `[${v.ciudad}]`).join(" "));
