@@ -1,7 +1,5 @@
 const ventas = require('./datos');
 
-
-
 const valorVenta = (venta) => venta.cantidad * venta.precio;
 
 
@@ -46,4 +44,26 @@ function ventasPorCiudad(ventas, ciudad) {
   for (const v of ventas) if (v.ciudad.trim().toLowerCase() === buscada) total += valorVenta(v);
   return total;
 }
+
+console.log("--- 1. ARREGLO COMPLETO ---");
+console.log("Total vendido:", totalVendido(ventas));
+console.log("Unidades:", unidadesVendidas(ventas));
+console.log("Venta mayor:", ventaMayor(ventas));
+console.log("Ticket promedio:", ticketPromedio(ventas));
+console.log("Ventas Medellín:", ventasPorCiudad(ventas, "medellin")); // o "medellín" según esté en datos.js
+
+console.log("\n--- 2. UN SOLO ELEMENTO ---");
+const unaVenta = [ventas[0]];
+console.log("Total vendido:", totalVendido(unaVenta));
+console.log("Unidades:", unidadesVendidas(unaVenta));
+console.log("Venta mayor:", ventaMayor(unaVenta));
+console.log("Ticket promedio:", ticketPromedio(unaVenta));
+console.log("Ventas ciudad:", ventasPorCiudad(unaVenta, ventas[0].ciudad));
+
+console.log("\n--- 3. ARREGLO VACÍO ---");
+console.log("Total vendido:", totalVendido([]));
+console.log("Unidades:", unidadesVendidas([]));
+console.log("Venta mayor:", ventaMayor([]));
+console.log("Ticket promedio:", ticketPromedio([]));
+console.log("Ventas Medellín:", ventasPorCiudad([], "Medellín"));
 
