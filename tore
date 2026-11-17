@@ -1,0 +1,12 @@
+[1mdiff --git a/src/analitica.js b/src/analitica.js[m
+[1mindex 8a3a4ba..0660b17 100644[m
+[1m--- a/src/analitica.js[m
+[1m+++ b/src/analitica.js[m
+[36m@@ -65,5 +65,4 @@[m [mconsole.log("Total vendido:", totalVendido([]));[m
+ console.log("Unidades:", unidadesVendidas([]));[m
+ console.log("Venta mayor:", ventaMayor([]));[m
+ console.log("Ticket promedio:", ticketPromedio([]));[m
+[31m-console.log("Ventas Medellín:", ventasPorCiudad([], "Medellín"));[m
+[31m-[m
+[32m+[m[32mconsole.log("Ventas Medellín:", ventasPorCiudad([], "Medellín"));[m
+\ No newline at end of file[m

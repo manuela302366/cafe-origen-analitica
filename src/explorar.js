@@ -1,3 +1,4 @@
+//Importamos el arreglo de ventas desde el archivo datos.js ubicado en la misma carpeta  src/
 const ventas = require('./datos.js');
 
 console.log("cantidad de registros:", ventas.length);
