@@ -83,3 +83,37 @@ Diccionario de datos :propiedad · tipo · significado
 | 2       | `2` | Origen Nariño 250 g | `1 * 26000 = 26000` | `84000` | `110000` |
 | 3       | `3` | Prensa francesa | `1 * 95000 = 95000` | `110000` | `205000` |
 | 4       | `4` | Origen Huila 500 g | `1 * 42000 = 42000` | `205000` | `247000` |
+
+
+
+
+
+## Bitácora - Sesión 4: Arreglos y Métodos en JavaScript
+
+### 1. `totalVendidoM` / `unidadesVendidasM` (Acumulación con `.reduce()`)
+* **¿Qué recorro?** El arreglo completo de `ventas`.
+* **¿Qué filtro?** No aplica (se procesan todos los registros).
+* **¿Qué transformo?** Cada objeto de venta en su valor monetario (`cantidad * precio`) o en su cantidad numérica.
+* **¿Qué acumulo?** Un valor numérico inicializado en `0`, sumando el resultado de cada iteración.
+* **¿Cómo agrupo?** No agrupa, reduce a un total escalar.
+
+### 2. `totalPorCiudad` (Agrupación con `.reduce()`)
+* **¿Qué recorro?** El arreglo de `ventas`.
+* **¿Qué filtro?** No aplica directamente, pero normaliza el texto (`trim().toLowerCase()`) para asegurar consistencia.
+* **¿Qué transformo?** Los nombres de las ciudades para estandarizarlas y el valor monetario de cada venta.
+* **¿Qué acumulo?** Un objeto acumulador (`grupos`) que va almacenando sumas parciales.
+* **¿Cómo agrupo?** Utiliza la ciudad normalizada como clave del objeto acumulador (`grupos[ciudadFormateada]`) para sumar el total vendido por zona.
+
+### 3. `unidadesPorProducto` (Agrupación por producto)
+* **¿Qué recorro?** El arreglo de `ventas`.
+* **¿Qué filtro?** Ninguno.
+* **¿Qué transformo?** Extrae el nombre del producto y la cantidad de unidades.
+* **¿Qué acumulo?** Un objeto diccionario con las sumas acumuladas de unidades por cada producto.
+* **¿Cómo agrupo?** Agrupa usando el nombre del producto (`v.producto`) como clave.
+
+### 4. `topProductosPorValor` (Ordenamiento y segmentación)
+* **¿Qué recorro?** Primero el arreglo de ventas para sumar totales por producto, luego las entradas del objeto resultante.
+* **¿Qué filtro?** Ninguno.
+* **¿Qué transformo?** Transforma el objeto de productos a un arreglo de pares clave-valor (`Object.entries`), y al final mapea para extraer solo los nombres de los productos.
+* **¿Qué acumulo?** Los valores monetarios totales generados por cada producto específico.
+* **¿Cómo agrupo?** Ordena de mayor a menor con `.sort()` de forma segura (sin mutar el arreglo original gracias al operador de propagación `[...]`) y corta los primeros $k$ elementos con `.slice(0, k)`.

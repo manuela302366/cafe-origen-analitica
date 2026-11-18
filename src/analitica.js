@@ -71,3 +71,82 @@ console.log("Unidades:", unidadesVendidas([]));
 console.log("Venta mayor:", ventaMayor([]));
 console.log("Ticket promedio:", ticketPromedio([]));
 console.log("Ventas Medellín:", ventasPorCiudad([], "Medellín"));
+
+
+// ==========================================
+// TUS FUNCIONES NUEVAS CON MÉTODOS DE ARREGLO (Las que piden ahora)
+// ==========================================
+
+// 1. Reemplaza totalVendido por totalVendidoM usando reduce:
+const totalVendidoM = (ventasArray) => 
+    ventasArray.reduce((acumulador, v) => acumulador + valorVenta(v), 0);
+
+// 2. Reemplaza unidadesVendidas por unidadesVendidasM usando reduce:
+const unidadesVendidasM = (ventasArray) => 
+    ventasArray.reduce((acumulador, v) => acumulador + v.cantidad, 0);
+
+// 3. Reemplaza ventasPorCiudad por ventasPorCiudadM usando reduce (con normalización):
+const ventasPorCiudadM = (ventasArray) => 
+    ventasArray.reduce((grupos, v) => {
+        const clave = v.ciudad.trim().toLowerCase();
+        grupos[clave] = (grupos[clave] || 0) + valorVenta(v);
+        return grupos;
+    }, {});
+// Exportamos las funciones del punto 1 para usarlas en verificar.js
+module.exports = {
+    totalVendido,
+    unidadesVendidas,
+    totalVendidoM,
+    unidadesVendidasM,
+    ventasPorCiudadM
+};
+
+
+function totalPorCiudad(ventasArray) {
+    return ventasArray.reduce((grupos, v) => {
+        const clave = v.ciudad.trim().toLowerCase();
+      
+        const ciudadFormateada = 
+            clave === 'medellín' ? 'Medellín' :
+            clave === 'bogotá' ? 'Bogotá' :
+            clave === 'cali' ? 'Cali' : 'Pereira';
+
+        grupos[ciudadFormateada] = (grupos[ciudadFormateada] || 0) + valorVenta(v);
+        return grupos;
+    }, {});
+}
+
+
+// 4. unidadesPorProducto: Agrupa y suma unidades por producto usando reduce
+function unidadesPorProducto(ventasArray) {
+    return ventasArray.reduce((grupos, v) => {
+        const prod = v.producto;
+        grupos[prod] = (grupos[prod] || 0) + v.cantidad;
+        return grupos;
+    }, {});
+}
+
+// 5. topProductosPorValor: Top k productos ordenados de mayor a menor valor
+function topProductosPorValor(ventasArray, k) {
+    const porProducto = ventasArray.reduce((g, v) => {
+        const valor = v.cantidad * v.precio;
+        g[v.producto] = (g[v.producto] || 0) + valor;
+        return g;
+    }, {});
+
+    return [...Object.entries(porProducto)]
+        .sort((a, b) => b[1] - a[1]) // Orden descendente (mayor a menor)
+        .slice(0, k)                 // Tomamos solo los primeros k
+        .map(([producto]) => producto); // Extraemos solo el nombre del producto
+}
+module.exports = {
+    totalVendido,
+    unidadesVendidas,
+    totalVendidoM,
+    unidadesVendidasM,
+    ventasPorCiudadM,
+    totalPorCiudad,
+    unidadesPorProducto,
+    topProductosPorValor
+};
+
