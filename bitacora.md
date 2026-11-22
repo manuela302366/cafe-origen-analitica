@@ -190,3 +190,22 @@ mini reto 3 dia 1 semana 1
 ¿Qué acumulo? El valor monetario total generado por cada producto en un objeto auxiliar antes de ordenar.
 
 ¿Cómo agrupo? Primero agrupa por v.producto en un objeto y luego ordena las entradas en un arreglo nuevo sin mutar ventas.
+
+
+## Registro de depuración — MiniReto 4 (v0.1) sema 1 dia 1
+
+### Error 1: "Bogotá aparecía dos veces"
+* **Síntoma:** Al agrupar o consultar ventas por ciudad en una versión preliminar, `"Bogotá"` aparecía como dos grupos separados (o no se sumaban registros que correspondían a la misma ciudad).
+* **Entrada que lo produce:** Registros con variaciones de texto como `"Bogotá"` y `"Bogotá "` (con espacio al final), o `"Medellín"` y `"medellín"`.
+* **Hipótesis:** La agrupación o comparación de ciudades compara directamente `v.ciudad` sin normalizar mayúsculas/minúsculas ni eliminar espacios sobrantes.
+* **Prueba realizada:** Probar la agrupación/búsqueda sobre entradas con espacios en blanco o distinta capitalización y revisar las claves resultantes.
+* **Causa:** Falta de normalización de cadenas (`.trim().toLowerCase()`) al crear la clave o comparar la ciudad.
+* **Corrección:** Normalizar con `v.ciudad.trim().toLowerCase()` antes de agrupar o comparar, manteniendo una sola clave/etiqueta por ciudad. En la versión v0.1 actual (`node src/reporte.js`), `totalPorCiudad` agrupa las 4 ciudades (`Medellín`, `Bogotá`, `Cali`, `Pereira`) sin duplicados.
+
+### Error 2: Ticket promedio daba `NaN` al filtrar un día sin ventas
+* **Síntoma:** Al calcular el ticket promedio sobre las ventas de un día sin registros, el resultado devolvía `NaN`.
+* **Entrada que lo produce:** `ticketPromedio(ventasDelDia(ventas, "2026-09-10"))` (un arreglo vacío `[]`, donde hay `0` ventas válidas).
+* **Hipótesis:** La función calcula `total / cantidad` asumiendo que siempre existe al menos una venta válida (`0 / 0` produce `NaN`).
+* **Prueba realizada:** Ejecutar `ticketPromedio([])` y `ticketPromedio(ventasDelDia(ventas, "2026-09-10"))` y observar el valor retornado.
+* **Causa:** División entre cero (`0 / 0`) cuando no hay ventas con `cantidad > 0` o el arreglo filtrado está vacío.
+* **Corrección:** Verificar si `validas === 0` (o si no hay ventas válidas) y retornar `0` antes de dividir. En la versión v0.1 actual (`node src/reporte.js`), el día `"2026-09-10"` muestra `0 ventas`, `Total: $ 0` y `Ticket prom.: $ 0`, sin `NaN` ni errores.

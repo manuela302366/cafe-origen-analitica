@@ -93,15 +93,15 @@ const unidadesVendidasM = (ventasArray) =>
     .filter((v) => v.ciudad.trim().toLowerCase() === buscada)
     .reduce((acumulador, v) => acumulador + valorVenta(v), 0);
 };
-// Exportamos las funciones del punto 1 para usarlas en verificar.js
-module.exports = {
-    totalVendido,
-    unidadesVendidas,
-    totalVendidoM,
-    unidadesVendidasM,
-    ventasPorCiudadM,
-    ventasPorCiudad,
-};
+
+
+
+
+// Filtra las ventas de una fecha exacta (devuelve un arreglo nuevo sin mutar)
+function ventasDelDia(ventas, fecha) {
+  const fechaBuscada = String(fecha || "").trim();
+  return ventas.filter((v) => String(v.fecha || "").trim() === fechaBuscada);
+}
 
 
 function totalPorCiudad(ventasArray) {
@@ -141,15 +141,19 @@ function topProductosPorValor(ventasArray, k) {
         .slice(0, k)                 // Tomamos solo los primeros k
         .map(([producto]) => producto); // Extraemos solo el nombre del producto
 }
+// Exportamos las funciones 
 module.exports = {
-    totalVendido,
-    unidadesVendidas,
-    totalVendidoM,
-    unidadesVendidasM,
-    ventasPorCiudadM,
-    ventasPorCiudad,
-    totalPorCiudad,
-    unidadesPorProducto,
-    topProductosPorValor
+  totalVendido,
+  unidadesVendidas,
+  ventaMayor,
+  ticketPromedio,
+  ventasPorCiudad,
+  totalVendidoM,
+  unidadesVendidasM,
+  ventasPorCiudadM,
+  totalPorCiudad,
+  unidadesPorProducto,
+  topProductosPorValor,
+  ventasDelDia,
 };
 
