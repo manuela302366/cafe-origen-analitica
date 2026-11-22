@@ -117,3 +117,76 @@ Diccionario de datos :propiedad · tipo · significado
 * **¿Qué transformo?** Transforma el objeto de productos a un arreglo de pares clave-valor (`Object.entries`), y al final mapea para extraer solo los nombres de los productos.
 * **¿Qué acumulo?** Los valores monetarios totales generados por cada producto específico.
 * **¿Cómo agrupo?** Ordena de mayor a menor con `.sort()` de forma segura (sin mutar el arreglo original gracias al operador de propagación `[...]`) y corta los primeros $k$ elementos con `.slice(0, k)`.
+
+mini reto 3 dia 1 semana 1
+## totalVendidoM(ventas)
+
+¿Qué recorro? El arreglo ventas (cada registro de venta).
+
+¿Qué filtro? Nada (incluye todos los registros del arreglo).
+
+¿Qué transformo? Cada venta a su valor monetario mediante valorVenta(v) (cantidad * precio).
+
+¿Qué acumulo? El total en dinero sumando cada valorVenta(v) en un acumulador iniciado en 0 con reduce.
+
+¿Cómo agrupo? No agrupa; devuelve un único número total.
+
+## unidadesVendidasM(ventas)
+
+¿Qué recorro? El arreglo ventas.
+
+¿Qué filtro? Nada (recorre todas las ventas).
+
+¿Qué transformo? Cada venta a su propiedad v.cantidad.
+
+¿Qué acumulo? La suma total de unidades vendidas iniciando en 0 con reduce.
+
+¿Cómo agrupo? No agrupa; devuelve un único número de unidades.
+
+## ventasPorCiudadM(ventas, ciudad)
+
+¿Qué recorro? El arreglo ventas.
+
+¿Qué filtro? Solo las ventas cuya ciudad normalizada (v.ciudad.trim().toLowerCase()) coincida con ciudad.trim().toLowerCase().
+
+¿Qué transformo? Las ventas filtradas a su valor (valorVenta(v)).
+
+¿Qué acumulo? La suma del dinero vendido en esa ciudad específica, iniciando en 0.
+
+¿Cómo agrupo? No devuelve grupos separadados; devuelve el acumulado de una sola ciudad.
+
+## totalPorCiudad(ventas)
+
+¿Qué recorro? El arreglo ventas.
+
+¿Qué filtro? Nada (considera todas las ventas).
+
+¿Qué transformo? El nombre de cada ciudad con .trim().toLowerCase() como clave normalizada y calcula valorVenta(v).
+
+¿Qué acumulo? El dinero vendido por ciudad sumando sobre el valor previo (o 0) dentro del objeto acumulador.
+
+¿Cómo agrupo? En un objeto diccionario ({}) donde cada clave es una ciudad normalizada sin duplicados y su valor es el total vendido allí.
+
+## unidadesPorProducto(ventas)
+
+¿Qué recorro? El arreglo ventas.
+
+¿Qué filtro? Nada (recorre todas las ventas).
+
+¿Qué transformo? Cada venta se asocia a su v.producto y su v.cantidad.
+
+¿Qué acumulo? Las unidades vendidas por producto sumando v.cantidad sobre el acumulado anterior (o 0).
+
+¿Cómo agrupo? En un objeto diccionario ({}) donde cada clave es el nombre del producto y su valor es el total de unidades.
+
+## topProductosPorValor(ventas, k)
+
+¿Qué recorro? Primero el arreglo ventas para acumular por producto y luego el arreglo de pares generado con Object.entries(...).
+
+¿Qué filtro? Recorta los primeros k elementos del ranking ordenado usando .slice(0, k).
+
+¿Qué transformo? Calcula cantidad * precio para agrupar, ordena de mayor a menor valor con .sort((a, b) => b[1] - a[1]) y finalmente extrae solo los nombres con .map(([producto]) => producto).
+
+¿Qué acumulo? El valor monetario total generado por cada producto en un objeto auxiliar antes de ordenar.
+
+¿Cómo agrupo? Primero agrupa por v.producto en un objeto y luego ordena las entradas en un arreglo nuevo sin mutar ventas.
