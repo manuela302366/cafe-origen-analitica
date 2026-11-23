@@ -42,6 +42,7 @@ function ventaMayorInst(ventas, contador) {
 
   return mayor;
 }
+
 // 3. Versión instrumentada de totalPorCiudad
 function totalPorCiudadInst(ventas, contador) {
   const totales = {};
@@ -66,9 +67,20 @@ function totalPorCiudadInst(ventas, contador) {
 
   return totales;
 }
+// 4. Versión constante de primeraVenta (O(1))
+function primeraVentaInst(ventas, contador) {
+  contador.ops += 1;
+  if (!Array.isArray(ventas) || ventas.length === 0) {
+    return null;
+  }
+
+  contador.ops += 1;
+  return ventas[0];
+}
 
 module.exports = {
   totalVendidoInst,
   ventaMayorInst,
   totalPorCiudadInst,
+  primeraVentaInst
 };

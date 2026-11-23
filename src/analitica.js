@@ -76,7 +76,7 @@ console.log("Ventas Medellín:", ventasPorCiudad([], "Medellín"));
 // ==========================================
 // TUS FUNCIONES NUEVAS CON MÉTODOS DE ARREGLO
 // ==========================================
-
+u
 // 1. Reemplaza totalVendido por totalVendidoM usando reduce:
 const totalVendidoM = (ventasArray) => 
     ventasArray.reduce((acumulador, v) => acumulador + valorVenta(v), 0);

@@ -209,3 +209,19 @@ mini reto 3 dia 1 semana 1
 * **Prueba realizada:** Ejecutar `ticketPromedio([])` y `ticketPromedio(ventasDelDia(ventas, "2026-09-10"))` y observar el valor retornado.
 * **Causa:** División entre cero (`0 / 0`) cuando no hay ventas con `cantidad > 0` o el arreglo filtrado está vacío.
 * **Corrección:** Verificar si `validas === 0` (o si no hay ventas válidas) y retornar `0` antes de dividir. En la versión v0.1 actual (`node src/reporte.js`), el día `"2026-09-10"` muestra `0 ventas`, `Total: $ 0` y `Ticket prom.: $ 0`, sin `NaN` ni errores.
+
+## MiniReto 5 — Paso 3: Predicción antes de medir (n × 10)
+
+Si el tamaño de entrada `n` se multiplica por **10**:
+- `totalVendidoInst`: las operaciones se multiplicarán aprox. por **10** (crecimiento lineal).
+- `ventaMayorInst`: las operaciones se multiplicarán aprox. por **10** (crecimiento lineal).
+- `totalPorCiudadInst`: las operaciones se multiplicarán aprox. por **10** (crecimiento lineal).
+- `primeraVenta` (referencia): las operaciones se multiplicarán por **1** (se mantienen constantes).
+
+totalVendidoInst: su número de operaciones se multiplica aproximadamente por 10 (crecimiento lineal). Como recorre las n ventas y hace una cantidad fija de operaciones contadas por venta, si hay 10 veces más ventas hace ~10 veces más operaciones.
+
+ventaMayorInst: su número de operaciones también se multiplica aproximadamente por 10 (crecimiento lineal), ya que revisa las n ventas para ir comparando y encontrando el monto mayor.
+
+totalPorCiudadInst: su número de operaciones también se multiplica aproximadamente por 10 (crecimiento lineal), porque visita cada una de las n ventas y evalúa sus condiciones para acumular por ciudad.
+
+primeraVenta (si la incluyes como comparación constante): su número de operaciones se multiplica por 1 (se mantiene igual, alrededor de 1 operación), porque solo accede al primer elemento (ventas[0]) sin importar qué tan grande sea n.
