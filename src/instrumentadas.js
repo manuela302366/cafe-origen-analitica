@@ -1,12 +1,13 @@
-// 1. Versión instrumentada de totalVendido
+// 1. Versión instrumentada de totalVendido. Recorrido lineal (O(n)) — totalVendidoInst,
+//  ventaMayorInst, totalPorCiudadInst
+//Qué hacen: entran a un ciclo (for) que pasa uno por uno por los n elementos del arreglo.
 function totalVendidoInst(ventas, contador) {
   let total = 0;
 
-  for (let i = 0; i < ventas.length; i++) {
+  for (let i = 0; i < ventas.length; i++) {   
     // +1 operación: visitamos el elemento en la posición i
     contador.ops += 1;
-    const venta = ventas[i];
-
+    const venta = ventas[i];       //revisan cada venta (ventas[i]) y evalúan condiciones en cada vuelt
     // +1 operación: comparamos para verificar que la venta tenga datos válidos
     contador.ops += 1;
     if (venta && venta.cantidad > 0 && venta.precio >= 0) {
@@ -16,7 +17,11 @@ function totalVendidoInst(ventas, contador) {
 
   return total;
 }
+
+
+
 // 2. Versión instrumentada de ventaMayor
+//En cada vuelta del ciclo (por cada venta válida), ejecuta 3 operaciones: 1) visita el elemento en la posición i, 2) compara para verificar que la venta tenga datos válidos, y 3) compara el monto actual contra el mayor encontrado hasta ahora.
 function ventaMayorInst(ventas, contador) {
   let mayor = null;
   let maxMonto = -Infinity;
@@ -67,7 +72,8 @@ function totalPorCiudadInst(ventas, contador) {
 
   return totales;
 }
-// 4. Versión constante de primeraVenta (O(1))
+// 4. Versión constante de primeraVenta (O(1))va directo a una posición exacta (ventas[0]) si el arreglo tiene datos.
+//queda en 2 (1 por validar si el arreglo está vacío o no es arreglo, y 1 por acceder directamente a ventas[0]).
 function primeraVentaInst(ventas, contador) {
   contador.ops += 1;
   if (!Array.isArray(ventas) || ventas.length === 0) {

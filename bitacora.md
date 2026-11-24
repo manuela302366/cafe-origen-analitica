@@ -225,3 +225,24 @@ ventaMayorInst: su número de operaciones también se multiplica aproximadamente
 totalPorCiudadInst: su número de operaciones también se multiplica aproximadamente por 10 (crecimiento lineal), porque visita cada una de las n ventas y evalúa sus condiciones para acumular por ciudad.
 
 primeraVenta (si la incluyes como comparación constante): su número de operaciones se multiplica por 1 (se mantiene igual, alrededor de 1 operación), porque solo accede al primer elemento (ventas[0]) sin importar qué tan grande sea n.
+
+## MiniReto 5: ¿Cuánto cuesta cada reporte? (Café Origen)
+
+### 1. Predicción antes de medir (Paso 3)
+- Si `n` se multiplica por 10 (`100` -> `1.000` -> `10.000` -> `100.000`), esperaba que `totalVendidoInst`, `ventaMayorInst` y `totalPorCiudadInst` multiplicaran sus operaciones unas 10 veces (crecimiento lineal).
+- En `primeraVentaInst`, esperaba que el número de operaciones se mantuviera igual sin importar el tamaño de `n` (crecimiento constante).
+
+### 2. Resultados medidos (`node src/medir.js`)
+| `n`    | `totalVendidoOps` | `ventaMayorOps` | `totalPorCiudadOps` | `primeraVentaOps` |
+| 100    | 200               | 300             | 300                 | 2                 |
+| 1000   | 2000              | 3000            | 3000                | 2                 |
+| 10000  | 20000             | 30000           | 30000               | 2                 |
+| 100000 | 200000            | 300000          | 300000              | 2                 |
+
+### 3. Comparación, clasificación Big O y justificación (Paso 6)
+- **Predicción vs. resultado:** Se cumplió lo esperado. Cada vez que `n` creció 10 veces, las operaciones de las funciones con recorrido subieron 10 veces, mientras que `primeraVentaInst` se mantuvo en `2` operaciones en todos los tamaños.
+- **`primeraVentaInst` -> `O(1)` (constante):** No usa ciclos ni compara con el resto de ventas; valida una vez y retorna `ventas[0]` directamente (`2` operaciones para `n = 100` hasta `n = 100.000`).
+- **`totalVendidoInst` -> `O(n)` (lineal):** Recorre `ventas` en un solo ciclo `for` realizando `2` operaciones por vuelta (`200` ops en `n = 100` y `200.000` ops en `n = 100.000`).
+- **`ventaMayorInst` -> `O(n)` (lineal):** Usa un único ciclo `for` con `3` operaciones por venta válida (`300` ops en `n = 100` y `300.000` ops en `n = 100.000`). Hace más trabajo por elemento que `totalVendidoInst`, pero crece en la misma proporción (`×10` al multiplicar `n` por `10`).
+- **`totalPorCiudadInst` -> `O(n)` (lineal):** Recorre `ventas` en un solo ciclo `for` y acumula por ciudad (`300` ops en `n = 100` y `300.000` ops en `n = 100.000`), con crecimiento proporcional a `n`.
+- **`O(n²)`:** Ninguna de estas funciones es cuadrática; ese comportamiento aparece cuando hay ciclos anidados (comparar cada elemento con otros), como se verá en el MiniReto 6.
