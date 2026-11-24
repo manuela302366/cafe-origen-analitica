@@ -246,3 +246,23 @@ primeraVenta (si la incluyes como comparación constante): su número de operaci
 - **`ventaMayorInst` -> `O(n)` (lineal):** Usa un único ciclo `for` con `3` operaciones por venta válida (`300` ops en `n = 100` y `300.000` ops en `n = 100.000`). Hace más trabajo por elemento que `totalVendidoInst`, pero crece en la misma proporción (`×10` al multiplicar `n` por `10`).
 - **`totalPorCiudadInst` -> `O(n)` (lineal):** Recorre `ventas` en un solo ciclo `for` y acumula por ciudad (`300` ops en `n = 100` y `300.000` ops en `n = 100.000`), con crecimiento proporcional a `n`.
 - **`O(n²)`:** Ninguna de estas funciones es cuadrática; ese comportamiento aparece cuando hay ciclos anidados (comparar cada elemento con otros), como se verá en el MiniReto 6.
+
+### Paso 2: Traza con 5 ventas y generalización para n ventas
+Arreglo de prueba (`n = 5`):
+- Índice 0: `C01`
+- Índice 1: `C02`
+- Índice 2: `C01`
+- Índice 3: `C03`
+- Índice 4: `C02`
+
+Conteo de comparaciones `ventas[i].cliente === ventas[j].cliente` (`j = i + 1`):
+- `i = 0` (`C01`) vs `j = 1, 2, 3, 4` -> 4 comparaciones
+- `i = 1` (`C02`) vs `j = 2, 3, 4` -> 3 comparaciones
+- `i = 2` (`C01`) vs `j = 3, 4` -> 2 comparaciones
+- `i = 3` (`C03`) vs `j = 4` -> 1 comparación
+- `i = 4` (`C02`) -> 0 comparaciones
+
+Total con `n = 5`: `4 + 3 + 2 + 1 = 10` comparaciones.
+
+Generalización para `n` ventas:
+`n * (n - 1) / 2` comparaciones (complejidad cuadrática `O(n²)`).

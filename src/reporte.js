@@ -8,6 +8,7 @@ const {
   unidadesPorProducto,
   topProductosPorValor,
   ventasDelDia,
+  clientesRecurrentes,
   
 
 } = require("./analitica");
@@ -79,3 +80,5 @@ console.log(
     totalVendidoM(ventasDiaSin)
   )} | Ticket prom.: ${formatoCOP(ticketPromedio(ventasDiaSin))}`
 );
+console.log("\n--- Clientes Recurrentes ---");
+console.log("Clientes recurrentes:", clientesRecurrentes(ventas));

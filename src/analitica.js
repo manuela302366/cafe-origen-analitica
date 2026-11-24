@@ -76,7 +76,7 @@ console.log("Ventas Medellín:", ventasPorCiudad([], "Medellín"));
 // ==========================================
 // TUS FUNCIONES NUEVAS CON MÉTODOS DE ARREGLO
 // ==========================================
-u
+
 // 1. Reemplaza totalVendido por totalVendidoM usando reduce:
 const totalVendidoM = (ventasArray) => 
     ventasArray.reduce((acumulador, v) => acumulador + valorVenta(v), 0);
@@ -141,6 +141,27 @@ function topProductosPorValor(ventasArray, k) {
         .slice(0, k)                 // Tomamos solo los primeros k
         .map(([producto]) => producto); // Extraemos solo el nombre del producto
 }
+
+
+
+
+function clientesRecurrentes(ventas) {
+  const recurrentes = [];
+
+  for (let i = 0; i < ventas.length; i++) {
+    for (let j = i + 1; j < ventas.length; j++) {
+      if (
+        ventas[i].cliente === ventas[j].cliente &&
+        !recurrentes.includes(ventas[i].cliente)
+      ) {
+        recurrentes.push(ventas[i].cliente);
+      }
+    }
+  }
+
+  return recurrentes;
+}
+
 // Exportamos las funciones 
 module.exports = {
   totalVendido,
@@ -155,5 +176,6 @@ module.exports = {
   unidadesPorProducto,
   topProductosPorValor,
   ventasDelDia,
+  clientesRecurrentes,
 };
 
