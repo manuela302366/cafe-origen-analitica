@@ -95,8 +95,6 @@ const unidadesVendidasM = (ventasArray) =>
 };
 
 
-
-
 // Filtra las ventas de una fecha exacta (devuelve un arreglo nuevo sin mutar)
 function ventasDelDia(ventas, fecha) {
   const fechaBuscada = String(fecha || "").trim();
@@ -117,7 +115,6 @@ function totalPorCiudad(ventasArray) {
         return grupos;
     }, {});
 }
-
 
 // 4. unidadesPorProducto: Agrupa y suma unidades por producto usando reduce
 function unidadesPorProducto(ventasArray) {
@@ -143,18 +140,19 @@ function topProductosPorValor(ventasArray, k) {
 }
 
 
-
-
+//Esta función recibe un arreglo de objetos llamado ventas y devuelve un arreglo (recurrentes)
 function clientesRecurrentes(ventas) {
-  const recurrentes = [];
+  const recurrentes = [];     //Crea un arreglo vacío donde se irán guardando los clientes recurrentes que se encuentren.
 
+
+  //Comparar cada venta con las siguientes (for anidados)
   for (let i = 0; i < ventas.length; i++) {
     for (let j = i + 1; j < ventas.length; j++) {
       if (
-        ventas[i].cliente === ventas[j].cliente &&
-        !recurrentes.includes(ventas[i].cliente)
+        ventas[i].cliente === ventas[j].cliente &&    //Detectar recurrencia y evitar repetidos.: Comprueba si el mismo cliente aparece en dos ventas distintas. Si es así, ese cliente es recurrente.
+        !recurrentes.includes(ventas[i].cliente)   //Verifica que todavía no esté agregado a recurrentes
       ) {
-        recurrentes.push(ventas[i].cliente);
+        recurrentes.push(ventas[i].cliente);         //Si cumple ambas condiciones, lo agrega al arreglo recurrentes.
       }
     }
   }

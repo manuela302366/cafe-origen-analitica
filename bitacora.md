@@ -266,3 +266,30 @@ Total con `n = 5`: `4 + 3 + 2 + 1 = 10` comparaciones.
 
 Generalización para `n` ventas:
 `n * (n - 1) / 2` comparaciones (complejidad cuadrática `O(n²)`).
+
+Ventas (n)Tiempo real¿Qué pasó al subir?1.00012.876 msPrimer dato de referencia2.00012.578 msPrácticamente igual (en números tan chicos el reloj varía un poquito)4.00049.902 msSubió cerca de 4 veces frente a 2.0008.000280.579 msSubió unas 5.6 veces frente a 4.00016.0001.226 ms (1.226 s)Subió unas 4.4 veces frente a 8.000   
+
+## Paso 4 — Análisis de la tabla y complejidad $O(n^2)$:
+Al duplicar la cantidad de ventas (n) a partir de los tamaños medianos/grandes, el tiempo de ejecución de clientesRecurrentes crece aproximadamente unas 4 veces (por ejemplo, de 8.000 ventas con 280.579 ms a 16.000 ventas con 1.226 s, subiendo cerca de 4.4x). Esto coincide con el comportamiento de una complejidad cuadrática $O(n^2)$: como existen ciclos anidados comparando elementos entre sí, duplicar n multiplica el trabajo cerca de $2^2 = 4$ veces y hace que el tiempo crezca mucho más rápido que la cantidad de ventas.   
+
+### Paso 5 — Estimación para 100.000 y 1.000.000 de ventas
+
+A partir de las mediciones reales de `clientesRecurrentes` (`n = 8.000` con `280.579 ms` y `n = 16.000` con `1.226 s` / `1.226 ms`) y sabiendo que el crecimiento es cuadrático $O(n^2)$ (multiplicar `n` por $k$ multiplica el tiempo aproximadamente por $k^2$):
+
+- **Estimación para 100.000 ventas:** tomando como referencia intermedia un tiempo cercano a ~`450–500 ms` (~`0.5 s`) para `10.000` ventas (o partiendo de `16.000` ventas con `1.226 s`, donde `n` crece `6.25` veces y el tiempo crece $6.25^2 \approx 39.06$ veces), el tiempo estimado ronda los **40 a 50 segundos** (`~0.7–0.8 minutos`). Como es menor a dos minutos (`120 s`), sí cumple la condición para probarlo si se desea.
+- **Estimación para 1.000.000 de ventas:** multiplicar `n` por `100` frente a `10.000` implica multiplicar el tiempo por $100^2 = 10.000$ veces. Con la misma base de ~`450–500 ms` en `10.000` ventas, el tiempo estimado sube a unos **4.500–5.000 segundos**, es decir, alrededor de **75 a 85 minutos** (`~1.3 horas`), por lo que no conviene ejecutarlo con este algoritmo.
+
+
+
+### Paso 6 — Costo oculto de `recurrentes.includes` en el peor caso
+
+El método `recurrentes.includes(ventas[i].cliente)` no consulta el arreglo de forma instantánea: **recorre `recurrentes` elemento por elemento** para comprobar si el cliente ya fue registrado.
+
+- **En el peor caso:** cuando el cliente aún no está en `recurrentes` (o está al final) y el arreglo `recurrentes` ha crecido con muchos clientes distintos (hasta $O(n)$ elementos), cada llamada a `.includes()` puede revisar hasta todos los elementos acumulados en `recurrentes`.
+- **Efecto en la complejidad:** al estar dentro de los ciclos anidados que ya recorren las ventas con comportamiento cuadrático $O(n^2)$, este recorrido adicional suma operaciones extra cada vez que se evalúa la condición, aumentando el trabajo total en escenarios con muchos clientes y repeticiones (mientras que una estructura como `Set` permitiría comprobar pertenencia en tiempo constante promedio $O(1)$).
+
+### Paso 7 — Conclusión para la gerente (sin tecnicismos)
+
+El reporte de clientes recurrentes funciona rápido con volúmenes pequeños de ventas, pero a medida que el historial crece el tiempo de espera aumenta de forma mucho más acelerada que la cantidad de ventas. Esto ocurre porque, para detectar quiénes compran más de una vez, el proceso cruza y revisa repetidamente los registros entre sí y vuelve a comprobar la lista de clientes ya detectados. 
+
+Con `16.000` ventas ya supera el segundo de espera, y si la operación escala a cientos de miles o a un millón de ventas con la llegada a grandes superficies y al marketplace nacional, este reporte podría tardar desde decenas de segundos hasta más de una hora. Por eso, es clave optimizar este reporte antes de manejar grandes volúmenes para que la gerencia obtenga información ágil sin cuellos de botella.
