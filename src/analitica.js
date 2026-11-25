@@ -160,6 +160,28 @@ function clientesRecurrentes(ventas) {
   return recurrentes;
 }
 
+
+// Calcula el total de ventas de una ciudad usando una cadena de métodos de arreglos:
+// map (normalizar) -> filter (filtrar ciudad) -> map (obtener precio) -> reduce (sumar)
+export function totalCiudadCadena(ventas, ciudad) {
+  // Limpiamos la ciudad buscada (sin espacios extra y en minúsculas) para comparar sin errores
+  const ciudadObjetivo = String(ciudad).trim().toLowerCase();
+
+  return ventas
+    // 1. map: recorre todas las ventas y crea un nuevo arreglo agregando la ciudad normalizada
+    .map((venta) => ({
+      ...venta, // Conserva las propiedades originales de cada venta
+      ciudadNormalizada: String(venta.ciudad ?? "").trim().toLowerCase(), // Normaliza la ciudad
+    }))
+    // 2. filter: recorre el arreglo anterior y deja solo las ventas de la ciudad objetivo
+    .filter((venta) => venta.ciudadNormalizada === ciudadObjetivo)
+    // 3. map: recorre las ventas filtradas y extrae el precio numérico de cada una
+    .map((venta) => Number(venta.precio ?? 0))
+    // 4. reduce: recorre los precios y los acumula en una sola suma total (inicia en 0)
+    .reduce((acumulado, precio) => acumulado + precio, 0);
+}
+
+
 // Exportamos las funciones 
 module.exports = {
   totalVendido,
@@ -175,5 +197,6 @@ module.exports = {
   topProductosPorValor,
   ventasDelDia,
   clientesRecurrentes,
+  totalCiudadCadena
 };
 
