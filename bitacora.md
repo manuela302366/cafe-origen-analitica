@@ -293,3 +293,40 @@ El método `recurrentes.includes(ventas[i].cliente)` no consulta el arreglo de f
 El reporte de clientes recurrentes funciona rápido con volúmenes pequeños de ventas, pero a medida que el historial crece el tiempo de espera aumenta de forma mucho más acelerada que la cantidad de ventas. Esto ocurre porque, para detectar quiénes compran más de una vez, el proceso cruza y revisa repetidamente los registros entre sí y vuelve a comprobar la lista de clientes ya detectados. 
 
 Con `16.000` ventas ya supera el segundo de espera, y si la operación escala a cientos de miles o a un millón de ventas con la llegada a grandes superficies y al marketplace nacional, este reporte podría tardar desde decenas de segundos hasta más de una hora. Por eso, es clave optimizar este reporte antes de manejar grandes volúmenes para que la gerencia obtenga información ágil sin cuellos de botella.
+
+## MiniReto 7: Tiempo, memoria y cadenas de métodos
+
+### 1. Comprobación con 10.000 ventas
+- Se probaron `totalCiudadCadena` y `totalCiudadUnaPasada` sobre un conjunto de **10.000 ventas** generadas para una misma ciudad.
+- Ambas funciones devolvieron exactamente el mismo resultado (**127827000**), confirmando que producen el mismo cálculo antes de comparar su consumo de tiempo y memoria.
+
+### 2. Recorridos, arreglos intermedios y notación Big O
+- **`totalCiudadCadena` (`map` → `filter` → `map` → `reduce`)**
+  - **Recorridos completos:** 4 recorridos (`map` para normalizar ciudades, `filter` para filtrar la ciudad objetivo, `map` para extraer `precio` y `reduce` para sumar).
+  - **Arreglos intermedios nuevos:** 3 arreglos nuevos en el camino (el arreglo con ciudad normalizada del primer `map`, el arreglo filtrado de `filter` y el arreglo de precios del segundo `map`; `reduce` devuelve un solo número).
+  - **Complejidad temporal:** $O(4n) \rightarrow O(n)$.
+  - **Complejidad espacial adicional:** $O(n)$, porque los arreglos intermedios crecen proporcionalmente al tamaño de entrada `n`.
+- **`totalCiudadUnaPasada` (`for...of`)**
+  - **Recorridos completos:** 1 solo recorrido sobre el arreglo de ventas.
+  - **Arreglos intermedios nuevos:** 0 arreglos intermedios (solo variables escalares como el acumulador numérico y cadenas/números puntuales).
+  - **Complejidad temporal:** $O(n)$.
+  - **Complejidad espacial adicional:** $O(1)$, ya que la memoria extra usada no depende de cuántos registros entren.
+
+### 3. ¿Por qué ambas son $O(n)$ en tiempo si una recorre 4 veces?
+- En notación Big O se mide cómo crece el trabajo cuando `n` es grande y se **eliminan las constantes multiplicativas** (como el `4` en $O(4n)$).
+- Recorrer el arreglo cuatro veces hace más trabajo real y crea más arreglos en memoria que recorrerlo una sola vez, pero su tasa de crecimiento sigue siendo **lineal** respecto a `n`.
+
+### 4. Clasificación espacial del motor
+- **Memoria adicional constante $O(1)$:** funciones que solo mantienen acumuladores o variables simples sin crear estructuras proporcionales al volumen de ventas (por ejemplo, `totalVendido`, `unidadesVendidas`, `ventaMayor`, `ticketPromedio` y `totalCiudadUnaPasada`).
+- **Memoria adicional proporcional $O(n)$:** funciones que crean arreglos, mapas o agrupaciones que crecen con los datos de entrada:
+  - `totalCiudadCadena`: crea arreglos intermedios (`map` y `filter`) que escalan con `n`.
+  - `totalPorCiudad`: acumula totales por ciudad en una estructura auxiliar que crece según la cantidad de ciudades presentes en los datos (en el peor caso, hasta $O(n)$ si cada registro tiene una ciudad distinta).
+  - `topProductosPorValor`: agrupa por producto y construye/ordena arreglos de productos para obtener el ranking, lo cual también escala con la cantidad de productos/ventas ($O(n)$ en espacio adicional).
+
+### 5. Decisión final para `totalCiudad`
+- Dejaré **`totalCiudadUnaPasada`** como implementación principal en el motor.
+- **Justificación:** aunque `totalCiudadCadena` es muy legible y expresiva, en un entorno de marketplace con cientos de miles de ventas y memoria limitada en servidor es preferible evitar los 3 arreglos intermedios y los 4 recorridos; `totalCiudadUnaPasada` mantiene la misma complejidad temporal asintótica $O(n)$ pero reduce el trabajo real y usa memoria adicional constante $O(1)$.
+
+### Decisión final: cuál versión de `totalCiudad` dejar en el motor
+- **Versión elegida:** `totalCiudadUnaPasada` (con `for...of`).
+- **Justificación:** aunque `totalCiudadCadena` resulta más expresiva y fácil de leer, encadena métodos que realizan 4 recorridos y generan 3 arreglos intermedios ($O(n)$ en espacio adicional). Dado que el proyecto escalará a cientos de miles de ventas en un servidor con memoria limitada, `totalCiudadUnaPasada` mantiene la complejidad temporal lineal $O(n)$ evitando arreglos intermedios y trabajando con memoria adicional constante $O(1)$.

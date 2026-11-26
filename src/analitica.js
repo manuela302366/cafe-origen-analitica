@@ -181,8 +181,6 @@ function totalCiudadCadena(ventas, ciudad) {
     .reduce((acumulado, precio) => acumulado + precio, 0);
 }
 
-
-
 // Calcula el total de ventas de una ciudad en una sola pasada
 // y sin crear arreglos intermedios
 function totalCiudadUnaPasada(ventas, ciudad) { 
