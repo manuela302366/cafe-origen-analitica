@@ -9,7 +9,8 @@ const {
   topProductosPorValor,
   ventasDelDia,
   clientesRecurrentes,
-  
+  totalCiudadCadena,
+  totalCiudadUnaPasada,
 
 } = require("./analitica");
 
@@ -82,3 +83,9 @@ console.log(
 );
 console.log("\n--- Clientes Recurrentes ---");
 console.log("Clientes recurrentes:", clientesRecurrentes(ventas));
+
+console.log("\n--- Total ciudad cadena ---");
+console.log("Total ciudad (cadena):", totalCiudadCadena(ventas, "Medellín"));
+
+console.log("--- Total ciudad una pasada ---");
+console.log("Total ciudad (una pasada):", totalCiudadUnaPasada(ventas, "Medellín"));

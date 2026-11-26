@@ -163,7 +163,7 @@ function clientesRecurrentes(ventas) {
 
 // Calcula el total de ventas de una ciudad usando una cadena de métodos de arreglos:
 // map (normalizar) -> filter (filtrar ciudad) -> map (obtener precio) -> reduce (sumar)
-export function totalCiudadCadena(ventas, ciudad) {
+function totalCiudadCadena(ventas, ciudad) {
   // Limpiamos la ciudad buscada (sin espacios extra y en minúsculas) para comparar sin errores
   const ciudadObjetivo = String(ciudad).trim().toLowerCase();
 
@@ -182,6 +182,26 @@ export function totalCiudadCadena(ventas, ciudad) {
 }
 
 
+
+// Calcula el total de ventas de una ciudad en una sola pasada
+// y sin crear arreglos intermedios
+function totalCiudadUnaPasada(ventas, ciudad) { 
+  const ciudadObjetivo = String(ciudad ?? "").trim().toLowerCase();      // Normalizamos la ciudad buscada una sola vez fuera del ciclo (sin espacios y en minúsculas
+  let total = 0;                                                         // Variable acumuladora numérica: ocupa memoria constante O(1)
+  
+  
+  for (const venta of ventas) {                                       // Recorremos el arreglo de ventas una sola vez sin crear arreglos nuevos en el camino
+ const ciudadVenta = String(venta.ciudad ?? "").trim().toLowerCase();         // Normalizamos la ciudad de la venta actual para compararla sin errores de formato
+
+    // Si coincide con la ciudad objetivo, sumamos su precio directamente al acumulador
+    if (ciudadVenta === ciudadObjetivo) {
+      total += Number(venta.precio ?? 0);
+    }
+  }
+
+  return total;
+}
+
 // Exportamos las funciones 
 module.exports = {
   totalVendido,
@@ -197,6 +217,7 @@ module.exports = {
   topProductosPorValor,
   ventasDelDia,
   clientesRecurrentes,
-  totalCiudadCadena
+  totalCiudadCadena,
+  totalCiudadUnaPasada,
 };
 
