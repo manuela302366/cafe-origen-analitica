@@ -11,6 +11,8 @@ const {
   clientesRecurrentes,
   totalCiudadCadena,
   totalCiudadUnaPasada,
+  
+
 
 } = require("./analitica");
 
@@ -89,3 +91,6 @@ console.log("Total ciudad (cadena):", totalCiudadCadena(ventas, "Medellín"));
 
 console.log("--- Total ciudad una pasada ---");
 console.log("Total ciudad (una pasada):", totalCiudadUnaPasada(ventas, "Medellín"));
+
+
+

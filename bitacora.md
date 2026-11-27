@@ -330,3 +330,41 @@ Con `16.000` ventas ya supera el segundo de espera, y si la operación escala a 
 ### Decisión final: cuál versión de `totalCiudad` dejar en el motor
 - **Versión elegida:** `totalCiudadUnaPasada` (con `for...of`).
 - **Justificación:** aunque `totalCiudadCadena` resulta más expresiva y fácil de leer, encadena métodos que realizan 4 recorridos y generan 3 arreglos intermedios ($O(n)$ en espacio adicional). Dado que el proyecto escalará a cientos de miles de ventas en un servidor con memoria limitada, `totalCiudadUnaPasada` mantiene la complejidad temporal lineal $O(n)$ evitando arreglos intermedios y trabajando con memoria adicional constante $O(1)$.
+
+
+## Optimización de `clientesRecurrentes` — Método de la sesión
+
+### 1. Entender (Entradas, salidas y restricciones)
+- **Entrada:** un arreglo `ventas` compuesto por objetos de venta, donde cada registro contiene la propiedad `cliente` (cadena de texto con el nombre o identificador del cliente).
+- **Salida:** un nuevo arreglo de cadenas de texto con los nombres de los clientes que aparecen en **más de una venta** (`>= 2` compras), sin elementos duplicados.
+- **Restricciones:**
+  - Si `ventas` no es un arreglo o está vacío (`[]`), la función debe devolver `[]`.
+  - Si un registro es nulo o tiene un `cliente` vacío o solo con espacios, se ignora.
+  - Un cliente que compró 2, 3 o más veces debe aparecer **una sola vez** en el arreglo final (el orden de los elementos no es estricto, siempre que estén todos los recurrentes sin repetir).
+
+### 2. Ejemplos y casos borde
+- **Caso normal:**
+  - Entrada: `[{ cliente: "Ana" }, { cliente: "Luis" }, { cliente: "Ana" }, { cliente: "Marta" }, { cliente: "Ana" }]`
+  - Salida esperada: `["Ana"]`
+- **Caso borde 1 — Arreglo vacío o entrada inválida:**
+  - Entrada: `[]` o `null`
+  - Salida esperada: `[]`
+- **Caso borde 2 — Sin clientes recurrentes (todos únicos):**
+  - Entrada: `[{ cliente: "Ana" }, { cliente: "Luis" }, { cliente: "Pedro" }]`
+  - Salida esperada: `[]`
+- **Caso borde 3 — Un solo registro en el arreglo:**
+  - Entrada: `[{ cliente: "Ana" }]`
+  - Salida esperada: `[]`
+- **Caso borde 4 — Todos los registros pertenecen al mismo cliente:**
+  - Entrada: `[{ cliente: "Ana" }, { cliente: "Ana" }, { cliente: "Ana" }]`
+  - Salida esperada: `["Ana"]`
+
+### 3. Fuerza bruta y su complejidad
+- **Cómo funciona la solución actual:** utiliza dos ciclos `for` anidados (`i` desde `0` hasta `n - 1`, y `j` desde `i + 1` hasta `n - 1`) para comparar cada venta contra todas las siguientes. Cuando encuentra una coincidencia, verifica además si el cliente ya está en el arreglo de salida usando `!recurrentes.includes(...)`.
+- **Complejidad temporal:** $O(n^2)$ en el peor caso, ya que por cada elemento recorre el resto del arreglo haciendo hasta $\frac{n(n-1)}{2}$ comparaciones (más la búsqueda lineal de `.includes(...)`). Como medimos antes, al duplicar `n` el tiempo crece de forma cuadrática (`n=8000`: `92.062ms` $\rightarrow$ `n=16000`: `480.505ms`).
+- **Complejidad espacial:** $O(k)$ (hasta $O(n)$ en el peor caso, donde $k$ es el número de clientes recurrentes almacenados en el arreglo de respuesta).
+
+### 4. Idea de optimización
+- **Trabajo repetido que vamos a eliminar:** volver a recorrer el arreglo buscando el mismo cliente una y otra vez, y revisar linealmente con `.includes(...)` si ya fue agregado.
+- **Estrategia con `Set` (un solo recorrido):** mantener un `Set` llamado `vistos` y otro `Set` llamado `recurrentes`. En una sola pasada por `ventas`, si el cliente ya está en `vistos`, se añade a `recurrentes`; si no, se guarda en `vistos`. Como `.has()` y `.add()` en un `Set` toman tiempo constante promedio $O(1)$, el algoritmo baja a **$O(n)$**.
+- **Estrategia con `Map` (conteo en un recorrido):** usar un `Map` (`comprasPorCliente`) donde la clave es el cliente y el valor es cuántas veces ha comprado, incrementando el contador en una sola pasada ($O(n)$) y filtrando al final los clientes con conteo `> 1`.
