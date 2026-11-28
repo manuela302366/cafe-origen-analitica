@@ -368,3 +368,41 @@ Con `16.000` ventas ya supera el segundo de espera, y si la operación escala a 
 - **Trabajo repetido que vamos a eliminar:** volver a recorrer el arreglo buscando el mismo cliente una y otra vez, y revisar linealmente con `.includes(...)` si ya fue agregado.
 - **Estrategia con `Set` (un solo recorrido):** mantener un `Set` llamado `vistos` y otro `Set` llamado `recurrentes`. En una sola pasada por `ventas`, si el cliente ya está en `vistos`, se añade a `recurrentes`; si no, se guarda en `vistos`. Como `.has()` y `.add()` en un `Set` toman tiempo constante promedio $O(1)$, el algoritmo baja a **$O(n)$**.
 - **Estrategia con `Map` (conteo en un recorrido):** usar un `Map` (`comprasPorCliente`) donde la clave es el cliente y el valor es cuántas veces ha comprado, incrementando el contador en una sola pasada ($O(n)$) y filtrando al final los clientes con conteo `> 1`.
+
+# Bitácora — MiniReto 9: Clientes Recurrentes (`Set` y `Map`)
+
+## 1. Entender el problema
+El objetivo es identificar qué clientes realizan más de una compra dentro de un arreglo de ventas (`ventas`), evitando duplicados en la salida y manejando de forma segura entradas inválidas o vacías (como arreglos vacíos, elementos nulos/indefinidos o nombres de cliente vacíos/con espacios).
+
+## 2. Ejemplos y casos borde
+* **Arreglo vacío (`[]`) o no arreglo:** retorna `[]` en las funciones de recurrentes y un `Map` vacío en `comprasPorCliente`.
+* **Registros sin cliente válido (`null`, `undefined` o string vacío):** se omiten con `continue` para no contaminar resultados.
+* **Cliente con 1 compra:** no es recurrente; aparece en `comprasPorCliente` con conteo `1`, pero no en recurrentes.
+* **Cliente con 2 o más compras:** es recurrente y debe aparecer una sola vez en el resultado final, conservando su tipo/valor original.
+* **Conjuntos de prueba verificados:** dataset base (`datos.js`) y dataset generado de `5.000` ventas (`generarVentas(5000)`), confirmando igualdad ordenada (`true`) entre la versión original, `clientesRecurrentesSet` y `clientesRecurrentesDesdeMap`.
+
+## 3. Fuerza bruta y su complejidad
+La implementación original evalúa recurrencia revisando apariciones previas o posteriores mediante búsquedas lineales dentro del arreglo por cada venta.
+* **Complejidad temporal:** cuadrática ($O(n^2)$) en el peor caso, porque por cada elemento se vuelven a recorrer elementos del arreglo. A medida que crece `n`, el tiempo aumenta de forma acelerada.
+* **Complejidad espacial:** lineal ($O(n)$) o auxiliar acotada según los resultados acumulados, pero con alto costo en operaciones repetidas de búsqueda.
+
+## 4. Idea de optimización (`Set` y `Map`)
+Para evitar búsquedas repetidas sobre el arreglo:
+* **`clientesRecurrentesSet`:** usa un `Set` (`vistos`) para comprobar en tiempo promedio constante ($O(1)$) si el cliente ya apareció antes, y otro `Set` (`recurrentes`) para registrar sin duplicados quienes repiten compra.
+* **`comprasPorCliente` y `clientesRecurrentesDesdeMap`:** usa un `Map` (`conteo`) para acumular cuántas compras tiene cada cliente en una sola pasada ($O(1)$ por lectura/escritura), y luego filtra las entradas con `cantidad > 1`.
+
+## 5. Implementación y mediciones (`1.000`, `10.000` y `100.000` ventas)
+Se implementaron `clientesRecurrentesSet`, `comprasPorCliente` y `clientesRecurrentesDesdeMap` en `src/analitica.js`, se verificó su equivalencia ordenada con `src/verificar-recurrentes.js` (`5k` y `datos.js` con resultado `true`) y se midieron los tiempos en `src/benchmark-recurrentes.js`:
+
+| Tamaño (`n`) | Original (`ms`) | `Set` (`ms`) | `Map` (`ms`) |
+| :--- | :---: | :---: | :---: |
+| **1.000 ventas** | `11.257 ms` | `0.854 ms` | `7.46 ms` |
+| **10.000 ventas** | `327.08 ms` | `6.5 ms` | `7.601 ms` |
+| **100.000 ventas** | *Omitida por escala cuadrática ($O(n^2)$)* | `36.842 ms` | `46.313 ms` |
+
+## 6. Análisis: intercambio entre tiempo y memoria
+Optimizar con `Set` y `Map` reduce la complejidad temporal de $O(n^2)$ a tiempo lineal amortizado ($O(n)$), logrando resolver `100.000` ventas en decenas de milisegundos (`36.842 ms` con `Set` y `46.313 ms` con `Map`).
+
+* **Qué ganamos (tiempo):** cada consulta o actualización en `Set` (`.has()`, `.add()`) y `Map` (`.get()`, `.set()`) es en promedio $O(1)$, evitando reescanear el arreglo completo en cada venta.
+* **Qué invertimos (memoria):** se reserva espacio adicional en memoria ($O(k)$, donde $k$ es la cantidad de clientes únicos) para almacenar las estructuras auxiliares (`vistos` y `recurrentes` en `Set`, o `conteo` en `Map`).
+* **Conclusión práctica:** para volúmenes medianos y grandes de ventas, este intercambio es muy favorable: el consumo extra de memoria es moderado frente a la drástica reducción del tiempo de ejecución.

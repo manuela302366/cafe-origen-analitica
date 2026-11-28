@@ -210,8 +210,9 @@ function clientesRecurrentesSet(ventas) {
   const recurrentes = new Set();
 
   for (const venta of ventas) {
-    const cliente = venta && venta.cliente ? String(venta.cliente).trim() : "";
-    if (!cliente) continue;
+ const cliente = venta ? venta.cliente : undefined;
+if (cliente === null || cliente === undefined || (typeof cliente === "string" && cliente.trim() === "")) continue;
+   
 
     if (vistos.has(cliente)) {
       recurrentes.add(cliente);
@@ -230,8 +231,9 @@ function comprasPorCliente(ventas) {
   }
 
   for (const venta of ventas) {
-    const cliente = venta && venta.cliente ? String(venta.cliente).trim() : "";
-    if (!cliente) continue;
+    const cliente = venta ? venta.cliente : undefined;
+if (cliente === null || cliente === undefined || (typeof cliente === "string" && cliente.trim() === "")) continue;
+   
 
     conteo.set(cliente, (conteo.get(cliente) || 0) + 1);
   }
